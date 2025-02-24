@@ -5,13 +5,15 @@ const booksModel = require("../model/livros");
 
 exports.getBooks = async (req, res) => {
   try {
-    const { autor, genero,} = req.query; // Obtém os parâmetros de consulta (query)
+    const autor = req.query.autor; // Obtém os parâmetros de consulta (query)
+    const genero = req.query.genero; // Obtém os parâmetros de consulta (query)
+
     const page = req.query.page || 1;
-    const limit = req.query.limit || 10;
+    const limit = 10;
     let whereClause = {};
     let offset;
 
-
+   // Calcula o offset para a paginação dos livros
     if(page && limit){
      offset = (page - 1 ) * limit;
     }

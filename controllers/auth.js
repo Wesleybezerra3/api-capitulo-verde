@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { json } = require("sequelize");
 
-const SECRET_KEY =process.env.JWT_KEY;
+const SECRET_KEY = process.env.JWT_KEY;
 
 const generateToken = (user) => {
   return jwt.sign({ id: user.id, nome: user.nome }, SECRET_KEY, {
@@ -34,11 +34,13 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { nome, senha } = req.body;
+
     const user = await userModel.findOne({ where: { nome } });
     if (!user) {
       return res.status(404).json({ message: "Usuário não encontrado!" });
     }
 
+    sole.log("✅ Usuário encontrado! Verificando senha...");
     const isPasswordValid = await bcrypt.compare(senha, user.senha);
 
     if (!isPasswordValid) {
@@ -46,6 +48,7 @@ exports.login = async (req, res) => {
     }
 
     const token = generateToken(user);
+
     return res.status(200).json({ message: "Login bem-sucedido!", token });
   } catch (error) {
     return res.status(500).json({ message: "Erro ao realizar login!" });
